@@ -13,4 +13,6 @@ public interface UserService{
     public void deleteUserById(int id);
     public List<UserDto> getAllUsers();
     public UserDto getUserById(int id);
+
+    UserDto registerUser(UserDto userDto);
 }

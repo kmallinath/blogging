@@ -3,6 +3,7 @@ package com.learn.blogging.exceptions;
 import com.learn.blogging.dao.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,5 +45,11 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorMap,HttpStatus.BAD_REQUEST);
 
+    }
+    @ExceptionHandler(InvalidUserException.class)
+    public  ResponseEntity<ApiResponse> invalidUserExceptionResponseEntity(InvalidUserException bx)
+    {
+        String message=bx.getMessage();
+        return new ResponseEntity<>(new ApiResponse(message,true),HttpStatus.OK);
     }
 }

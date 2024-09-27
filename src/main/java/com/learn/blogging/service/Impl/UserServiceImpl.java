@@ -1,12 +1,16 @@
 package com.learn.blogging.service.Impl;
 
 import com.learn.blogging.beans.UserDto;
+import com.learn.blogging.entities.Role;
 import com.learn.blogging.entities.User;
 import com.learn.blogging.exceptions.*;
+import com.learn.blogging.repository.RoleRepo;
 import com.learn.blogging.repository.UserRepo;
 import com.learn.blogging.service.UserService;
+import com.learn.blogging.utils.AppConstants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -18,12 +22,19 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
    private UserRepo userRepo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private RoleRepo roleRepo;
+
     @Override
     public UserDto createUser(UserDto userDto) {
           User savedUser=beanToEntity(userDto);
+          savedUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
           if(userRepo.findByUsername(userDto.getUsername())==null) {
 
               userRepo.save(savedUser);
@@ -32,7 +43,7 @@ public class UserServiceImpl implements UserService {
           }
           else
           {
-              throw new  ResourceFoundException("User","id",userDto.getId());
+              throw new  ResourceFoundException("User","Username of",userDto.getId());
           }
     }
 
@@ -78,6 +89,25 @@ public class UserServiceImpl implements UserService {
         User user=Saveduser.get();
         UserDto userDto=entityToBean(user);
         return userDto;
+
+    }
+
+    @Override
+    public UserDto registerUser(UserDto userDto) {
+
+        User user=this.beanToEntity(userDto);
+
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+
+        Role role=this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+
+        user.setRoles(List.of(role));
+
+        User saved=userRepo.save(user);
+
+        return entityToBean(saved);
+
+
 
     }
 

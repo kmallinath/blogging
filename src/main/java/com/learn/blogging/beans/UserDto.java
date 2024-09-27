@@ -1,5 +1,7 @@
 package com.learn.blogging.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.learn.blogging.entities.Role;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.beans.JavaBean;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,4 +33,6 @@ public class UserDto {
     @NotEmpty
     @Size(max = 100,message = "Maximum length is 100 characters")
     private String about;
+
+    private List<RoleDto> roles;
 }
