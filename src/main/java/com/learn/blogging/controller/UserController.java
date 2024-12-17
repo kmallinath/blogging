@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
 
     @PostMapping(value = "/add")
     public ResponseEntity<UserDto> createUser( @Valid @RequestBody UserDto user)
@@ -34,7 +36,6 @@ public class UserController {
         UserDto userDto1=userService.updateUser(userDto,id);
         return new ResponseEntity<>(userDto1,HttpStatus.ACCEPTED);
     }
-
     @PreAuthorize("hasAuthority('ADMIN')")
    @DeleteMapping("/delete/{id}")
    public  ResponseEntity<ApiResponse> deleteUser(@PathVariable("id") int id)

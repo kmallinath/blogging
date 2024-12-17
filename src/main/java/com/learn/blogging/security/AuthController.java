@@ -1,9 +1,11 @@
 package com.learn.blogging.security;
 
 import com.learn.blogging.beans.UserDto;
+import com.learn.blogging.entities.User;
 import com.learn.blogging.exceptions.InvalidUserException;
 import com.learn.blogging.service.UserService;
-import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +16,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("auth")
 public class AuthController {
+
 
 
     @Autowired
@@ -35,11 +37,15 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private  ModelMapper modelMapper;
 
 
 
+
+    @Transactional
     @PostMapping("/register")
-    public ResponseEntity<UserDto>registerNewUser(@RequestBody  UserDto userDto)
+    public ResponseEntity<UserDto>registerNewUser(@Valid @RequestBody  UserDto userDto)
     {
         UserDto userDto1=userService.registerUser(userDto);
         return  new ResponseEntity<>(userDto1,HttpStatus.CREATED);
@@ -54,10 +60,13 @@ public class AuthController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         UserDetails userDetails= userDetailsService.loadUserByUsername(jwtAuthRequest.getUsername());
+        CustomUserDetails customUserDetails= (CustomUserDetails) userDetailsService.loadUserByUsername(jwtAuthRequest.getUsername());
         String token =jwtTokenHelper.generateToken(userDetails);
         AuthResponse authResponse=new AuthResponse();
         authResponse.setToken(token);
+        authResponse.setUser(this.modelMapper.map(customUserDetails.getUser(),UserDto.class));
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
 
     }

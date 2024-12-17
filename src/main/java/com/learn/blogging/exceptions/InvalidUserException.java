@@ -8,7 +8,7 @@ public class InvalidUserException extends RuntimeException {
 
 
     public InvalidUserException(String message) {
-        super(String.format("Userdetails are not valid", message));
+        super(String.format("User details are not valid", message));
         this.message = message;
     }
 }

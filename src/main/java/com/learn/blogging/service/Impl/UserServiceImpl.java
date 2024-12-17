@@ -12,8 +12,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,19 +97,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto registerUser(UserDto userDto) {
 
-        User user=this.beanToEntity(userDto);
+        User user = this.beanToEntity(userDto);
 
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
-        Role role=this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+            if (userRepo.findByUsername(userDto.getUsername()) != null) {
+                throw new ResourceFoundException("User", "Username of", userDto.getId());
 
-        user.setRoles(List.of(role));
+            } else if (userRepo.findByEmail(userDto.getEmail()) != null) {
+                throw new ResourceFoundException("User", "Email of", userDto.getId());
+            } else {
+                Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
 
-        User saved=userRepo.save(user);
+                user.setRoles(List.of(role));
 
-        return entityToBean(saved);
+                User saved = userRepo.save(user);
 
-
+                return entityToBean(saved);
+            }
 
     }
 

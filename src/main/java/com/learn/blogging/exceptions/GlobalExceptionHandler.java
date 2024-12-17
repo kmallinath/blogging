@@ -50,6 +50,6 @@ public class GlobalExceptionHandler {
     public  ResponseEntity<ApiResponse> invalidUserExceptionResponseEntity(InvalidUserException bx)
     {
         String message=bx.getMessage();
-        return new ResponseEntity<>(new ApiResponse(message,true),HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(message,false),HttpStatus.OK);
     }
 }

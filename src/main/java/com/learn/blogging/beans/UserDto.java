@@ -2,14 +2,13 @@ package com.learn.blogging.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.learn.blogging.entities.Role;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +26,8 @@ public class UserDto {
     @Size(min = 4,max=15,message = "Username mustbe of length 4 to 10")
     private String username;
     @Email(message = "Please enter valid email")
+    @NotEmpty(message = "Email is mandatory")
+//    @Column(unique = true)
     private String email;
     @Size(min=8,message = "Minimum of 8 characters")
     private String password;
@@ -35,4 +36,9 @@ public class UserDto {
     private String about;
 
     private List<RoleDto> roles;
+
+    @JsonIgnore
+    public @Size(min = 8, message = "Minimum of 8 characters") String getPassword() {
+        return password;
+    }
 }
