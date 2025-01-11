@@ -1,6 +1,7 @@
 package com.learn.blogging.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.learn.blogging.entities.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -30,6 +31,7 @@ public class UserDto {
 //    @Column(unique = true)
     private String email;
     @Size(min=8,message = "Minimum of 8 characters")
+    @NotEmpty
     private String password;
     @NotEmpty
     @Size(max = 100,message = "Maximum length is 100 characters")
@@ -40,5 +42,10 @@ public class UserDto {
     @JsonIgnore
     public @Size(min = 8, message = "Minimum of 8 characters") String getPassword() {
         return password;
+    }
+
+    @JsonProperty
+    public void setPassword(@Size(min = 8, message = "Minimum of 8 characters") String password) {
+        this.password = password;
     }
 }

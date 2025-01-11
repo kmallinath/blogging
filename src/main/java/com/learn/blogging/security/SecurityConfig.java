@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -58,7 +59,7 @@ public class SecurityConfig  {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",
-            "/webjars/**",
+            "/webjars/**"
 
 
 
@@ -80,6 +81,8 @@ public class SecurityConfig  {
         httpSecurity.csrf(customizer->customizer.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(customizer->customizer
+                        .requestMatchers(HttpMethod.GET, "/**")
+                        .permitAll()
                         .requestMatchers(publicUrls)
                         .permitAll()
                         .anyRequest()
