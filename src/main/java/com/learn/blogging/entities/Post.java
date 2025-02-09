@@ -18,6 +18,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private  String content;
     @Column(name = "addedDate", columnDefinition = "DATETIME")
     private Date Addeddate;
@@ -29,6 +31,6 @@ public class Post {
     @JoinColumn(nullable = false,name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments;
 }

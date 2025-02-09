@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -135,9 +136,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public boolean deletePostById(int id) {
         Post post= postRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("POST","ID",id));
-        postRepo.deleteById(id);
+        postRepo.deletePostById(id);
         return true;
     }
 

@@ -119,7 +119,7 @@ public class PostController {
 
     @PostMapping("/post/image/upload/{postId}")
     public ResponseEntity<FileResponse> uploadPostImage(
-            @RequestParam("imageName")MultipartFile file,
+            @RequestParam("image")MultipartFile file,
             @PathVariable("postId") int postId
             ) throws IOException {
         PostDto postDto=postService.getPostBtId(postId);

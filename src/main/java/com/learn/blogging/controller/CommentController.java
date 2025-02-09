@@ -16,7 +16,7 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping("post/addComment/{postId}")
+    @PostMapping("post/addcomment/{postId}")
     public CommentDto addComment(@PathVariable("postId") int postId, @RequestBody CommentDto commentDto)
     {
         CommentDto commentDto1=commentService.addComment(postId,commentDto);
